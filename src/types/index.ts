@@ -1,5 +1,4 @@
 export * from './query'
-export * from './util'
 
 export type DialectType = 'mysql'
 export type FieldType = 'boolean' | 'number' | 'bigint' | 'string' | 'Date' | 'any'
