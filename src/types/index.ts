@@ -3,13 +3,11 @@ export * from './util'
 
 export type DialectType = 'mysql'
 
-export type ColumnInfo = {
-  type: string
-  isNullable: boolean
+export type ForeignKeyInfo = {
   isPrimaryKey: boolean
-  isAutoIncrement: boolean
   isForeignKey: boolean
-  comment: string | null
+  isUnique: boolean
+  isSerialKey: boolean
   foreignSources: {
     source_table: string | null
     source_schema: string | null
@@ -17,9 +15,18 @@ export type ColumnInfo = {
     target_table: string | null
     source_column: string | null
     target_column: string | null
-  }
+  } | null
 }
 
-export type TableInfo = Record<string, ColumnInfo>
+export type ColumnInfo = {
+  type: string
+  allowNull: boolean
+  defaultValue: any
+  primaryKey: boolean
+  autoIncrement: boolean
+  comment: string | null
+}
 
-export type DBInfo = Record<string, TableInfo>
+export type TableInfo<T> = Record<string, T>
+
+export type DBInfo<T> = Record<string, TableInfo<T>>

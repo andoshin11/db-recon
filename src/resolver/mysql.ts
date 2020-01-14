@@ -1,4 +1,6 @@
-export const resolver = {
+import { Resolver } from './types'
+
+export const resolver: Resolver = {
   getForeignKeysQuery(tableName: string, schemaName: string): string {
     return `
       SELECT \
@@ -17,5 +19,17 @@ export const resolver = {
       WHERE \
         K.TABLE_NAME = '${tableName}' \
         AND K.CONSTRAINT_SCHEMA = '${schemaName}';`
-  }
+  },
+
+  isUnique(record) {
+    return !!record && !!record.column_key && record.column_key.toUpperCase() === 'UNI'
+  },
+
+  isPrimaryKey(record) {
+    return !!record && !!record.constraint_name && record.constraint_name === 'PRIMARY'
+  },
+
+  isSerialKey(record) {
+    return !!record && !!record.extra && record.extra === 'auto_increment'
+  },
 }

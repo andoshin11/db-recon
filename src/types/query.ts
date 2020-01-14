@@ -9,3 +9,12 @@ export type GetForeignKeysResult = {
   extra: string | null
   column_key: '' | 'PRI' | 'UNI' | 'MUL'
 }
+
+export type DescribeTableResult = {
+  type: string
+  allowNull: boolean
+  defaultValue: any
+  primaryKey: boolean
+  autoIncrement: boolean
+  comment: string | null
+}
