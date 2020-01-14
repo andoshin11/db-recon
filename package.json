@@ -4,6 +4,9 @@
   "main": "index.js",
   "author": "andoshin11 <shinglish11@gmail.com>",
   "license": "MIT",
+  "bin": {
+    "ts-gen": "./bin/ts-gen.js"
+  },
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w"
@@ -16,6 +19,7 @@
     "typescript": "^3.7.4"
   },
   "dependencies": {
+    "commander": "^4.1.0",
     "ejs": "^3.0.1",
     "mysql2": "^2.1.0",
     "prettier": "^1.19.1",
