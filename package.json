@@ -9,12 +9,16 @@
     "watch": "tsc -w"
   },
   "devDependencies": {
+    "@types/ejs": "^3.0.0",
     "@types/node": "^13.1.6",
+    "@types/prettier": "^1.19.0",
     "@types/validator": "^12.0.1",
     "typescript": "^3.7.4"
   },
   "dependencies": {
+    "ejs": "^3.0.1",
     "mysql2": "^2.1.0",
+    "prettier": "^1.19.1",
     "promise-mysql": "^4.1.1",
     "sequelize": "^5.21.3"
   }

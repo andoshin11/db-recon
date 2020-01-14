@@ -1,0 +1,8 @@
+<%_ Object.entries(data).forEach(([tableName, tableInfo]) => { _%>
+export interface <%= tableName%>Attribute {
+  <%_ Object.entries(tableInfo).forEach(([columnName, typeInfo]) => {_%>
+  <%= columnName %>: <%= typeInfo.type %><%= typeInfo.isNullable ? ' | null' : '' _%>;
+  <% }) _%>
+}
+
+<%_ }) _%>

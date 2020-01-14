@@ -2,6 +2,12 @@ export * from './query'
 export * from './util'
 
 export type DialectType = 'mysql'
+export type FieldType = 'boolean' | 'number' | 'bigint' | 'string' | 'Date' | 'any'
+
+export type TypeInfo = {
+  type: FieldType
+  isNullable: boolean
+}
 
 export type ForeignKeyInfo = {
   isPrimaryKey: boolean
@@ -30,3 +36,8 @@ export type ColumnInfo = {
 export type TableInfo<T> = Record<string, T>
 
 export type DBInfo<T> = Record<string, TableInfo<T>>
+
+export interface GenFileRequest {
+  filepath: string
+  content: string
+}
