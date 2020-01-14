@@ -1,15 +1,16 @@
 {
-  "name": "schema-gen",
-  "version": "1.0.0",
+  "name": "db-recon",
+  "version": "0.0.1",
   "main": "index.js",
   "author": "andoshin11 <shinglish11@gmail.com>",
   "license": "MIT",
   "bin": {
-    "ts-gen": "./bin/ts-gen.js"
+    "db-recon": "./bin/ts-gen.js"
   },
   "scripts": {
     "build": "tsc",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "prepare": "tsc"
   },
   "devDependencies": {
     "@types/ejs": "^3.0.0",
