@@ -7,6 +7,21 @@
   "bin": {
     "db-recon": "./bin/ts-gen.js"
   },
+  "keywords": [
+    "codegen",
+    "typescript",
+    "database",
+    "RDBMS",
+    "MySQL"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andoshin11/db-recon.git"
+  },
+  "bugs": {
+    "url": "https://github.com/andoshin11/db-recon/issues"
+  },
+  "homepage": "https://github.com/andoshin11/db-recon#readme",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
