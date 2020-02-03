@@ -1,6 +1,6 @@
 export * from './query'
 
-export type DialectType = 'mysql'
+export type DialectType = 'mysql' | 'mssql'
 export type FieldType = 'boolean' | 'number' | 'bigint' | 'string' | 'Date' | 'any'
 
 export type TypeInfo = {

@@ -21,7 +21,7 @@ export class Interactor {
     return resolvers[this.dialect]
   }
 
-  showAllTables(): Promise<string[]> {
+  showAllTables(): Promise<string[] | { tableName: string; schema: string }[]> {
     return this.queryInterface.showAllTables()
   }
 

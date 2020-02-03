@@ -40,6 +40,7 @@
     "mysql2": "^2.1.0",
     "prettier": "^1.19.1",
     "promise-mysql": "^4.1.1",
-    "sequelize": "^5.21.3"
+    "sequelize": "^5.21.3",
+    "tedious": "^8.0.1"
   }
 }

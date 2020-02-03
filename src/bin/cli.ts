@@ -10,6 +10,7 @@ interface CLIOptions {
   password?: string
   port?: string
   output?: string
+  dialect?: "mysql" | "postgres" | "sqlite" | "mariadb" | "mssql"
 }
 
 commander
@@ -22,8 +23,9 @@ commander
   .option('-p, --password <password>', 'Password for database')
   .option('-P, --port <port>', 'Port number for database')
   .option('-o, --output <output>', 'Output directory')
+  .option('-D, --dialect <dialect>', 'Dialect')
   .action(async (options: CLIOptions) => {
-    const { output, host, database, user, password, port } = options
+    const { output, host, database, user, password, port, dialect } = options
     let sequelize: Sequelize | undefined
     try {
       if (!output) {
@@ -42,20 +44,29 @@ commander
         throw new Error('Username for database is mandatory. Please specify with --user option.')
       }
 
+      const _dialect = dialect || 'mysql'
+
       sequelize = new Sequelize(database, user, password, {
         host,
         port: port ? parseInt(port, 10) : undefined,
-        dialect: 'mysql',
+        dialect: _dialect,
         pool: {
           max: 5,
           min: 0,
           acquire: 30000,
           idle: 10000
         },
-        logging: console.log,
+        logging: false,
         define: {
           timestamps: false,
           freezeTableName: true
+        },
+        dialectOptions: _dialect !== 'mssql' ? undefined : {
+          options: {
+            useUTC: false,
+            dateFirst: 1,
+            requestTimeout: 50000
+          }
         }
       })
 

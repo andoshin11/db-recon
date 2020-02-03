@@ -19,8 +19,12 @@ export class Generator {
   async generate() {
 
     const interactor = new Interactor(this.sequelize)
-    const tableNames = await interactor.showAllTables()
-    const columnInfo = await processColumnInfo(tableNames, interactor)
+    let tableNames = await interactor.showAllTables()
+    if (typeof tableNames[0] !== 'string') {
+      // @ts-ignore
+      tableNames = tableNames.map(i => i.tableName)
+    }
+    const columnInfo = await processColumnInfo(tableNames as string[], interactor)
 
     const typeInfo: DBInfo<TypeInfo> = Object.entries(columnInfo).reduce((acc, ac) => {
       const [tableName, tableInfo] = ac

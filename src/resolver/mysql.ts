@@ -29,6 +29,10 @@ export const resolver: Resolver = {
     return !!record && !!record.constraint_name && record.constraint_name === 'PRIMARY'
   },
 
+  isForeignKey(record) {
+    return false
+  },
+
   isSerialKey(record) {
     return !!record && !!record.extra && record.extra === 'auto_increment'
   },
