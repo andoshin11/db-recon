@@ -1,0 +1,11 @@
+export type RowDataPacket<T> = T;
+
+export type MetaType<T extends object> = { [key in keyof T]: { extra: {
+  autoIncrement: boolean;
+  defaultGenerad: boolean;
+}} }
+
+type RequiredKeyForSeed<T extends object, M extends MetaType<T>> = { [P in keyof T]: null extends T[P] ? never : M[P] extends { extra: { autoIncrement: true } } ? never : M[P] extends { extra: { defaultGenerad: true } } ? never : P }[keyof T]
+
+export type SeedType<T extends object, M extends MetaType<T>> = { [P in RequiredKeyForSeed<T, M>]: T[P] } & { [P in Exclude<keyof T, RequiredKeyForSeed<T, M>>]?: T[P] }
+  

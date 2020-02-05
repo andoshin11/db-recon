@@ -3,8 +3,9 @@ import * as fs from 'fs'
 import * as prettier from 'prettier'
 import * as path from 'path'
 import * as ejs from 'ejs'
+import { resolvers } from './resolver'
 import { Interactor } from './interactor'
-import { processColumnInfo, mapTypeInfo } from './utils'
+import { processColumnInfo, mapTypeInfo, processPrimaryKeyInfo, processMetaInfo } from './utils'
 import { DBInfo, TableInfo, TypeInfo, GenFileRequest } from './types'
 
 export class Generator {
@@ -19,6 +20,7 @@ export class Generator {
   async generate() {
 
     const interactor = new Interactor(this.sequelize)
+    const resolver = resolvers[interactor.dialect]
     let tableNames = await interactor.showAllTables()
     if (typeof tableNames[0] !== 'string') {
       // @ts-ignore
@@ -38,6 +40,10 @@ export class Generator {
       return acc
     }, {} as DBInfo<TypeInfo>)
 
+    const metaInfo = await processMetaInfo(tableNames as string[], interactor, resolver)
+
+    const PKInfo = await processPrimaryKeyInfo(tableNames as string[], interactor)
+
     ///////////////// write files ///////////////////
 
     // Setup output directory
@@ -47,13 +53,32 @@ export class Generator {
 
     // setup templates
     const attributeTemplate = path.resolve(__dirname, '../templates/attribute.ejs')
+    const baseTemplate = path.resolve(__dirname, '../templates/base.ejs')
+    const modelTemplate = path.resolve(__dirname, '../templates/model.ejs')
+    const typesTemplate = path.resolve(__dirname, '../templates/types.ejs')
 
     this.genFiles([
+      ...(tableNames as string[]).map(tableName => ({
+        filepath: path.resolve(this.output, `${tableName}.ts`),
+        content: ejs.render(this.readFileSync(modelTemplate), { tableName })
+      })),
       {
         filepath: path.resolve(this.output, 'attribute.ts'),
-        content: ejs.render(fs.readFileSync(attributeTemplate, 'utf-8'), { data: typeInfo }, this.createEjsOptions({ filename: attributeTemplate })) as string
+        content: ejs.render(this.readFileSync(attributeTemplate), { typeInfo, PKInfo, metaInfo }, this.createEjsOptions({ filename: attributeTemplate })) as string
+      },
+      {
+        filepath: path.resolve(this.output, 'base.ts'),
+        content: ejs.render(this.readFileSync(baseTemplate), {}, this.createEjsOptions({ filename: baseTemplate })) as string
+      },
+      {
+        filepath: path.resolve(this.output, 'types.ts'),
+        content: ejs.render(this.readFileSync(typesTemplate), {}, this.createEjsOptions({ filename: typesTemplate })) as string
       }
     ])
+  }
+
+  private readFileSync(_path: string) {
+    return fs.readFileSync(_path, 'utf-8')
   }
 
   private createEjsOptions(params: { filename: string }): ejs.Options {

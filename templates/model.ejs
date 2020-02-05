@@ -1,0 +1,9 @@
+import { Connection } from 'promise-mysql'
+import { ModelBase } from './base'
+import { <%= tableName %>Attribute, <%= tableName %>PK, <%= tableName %>Meta } from './attribute'
+
+export class <%= tableName %>Model extends ModelBase<<%= tableName %>Attribute, <%= tableName %>PK, <%= tableName %>Meta> {
+  constructor(connection: Connection) {
+    super(connection, '<%= tableName %>')
+  }
+}

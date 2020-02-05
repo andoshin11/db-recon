@@ -1,0 +1,68 @@
+import { Connection } from 'promise-mysql'
+import { RowDataPacket, SeedType, MetaType } from './types'
+
+export class ModelBase<T extends object, PK extends keyof T, M extends MetaType<T>> {
+  private _tableName: string
+  private _connection: Connection
+
+  constructor(connection: Connection, tableName: string) {
+    this._connection = connection
+    this._tableName = tableName
+  }
+
+  async insert(params: SeedType<T, M>) {
+
+    // run query
+    const sqlStr = `INSERT INTO ${this._tableName} SET ?`
+    await this._connection.query(sqlStr, params)
+
+    return
+  }
+
+  // async update() {
+  //   // bail if the data does not exists
+  //   if (!this.isExist()) {
+  //     throw new Error('failed to update: does not exists')
+  //   }
+
+  //   // bail if deleted
+  //   if (!this.isDeleted()) {
+  //     throw new Error('failed to update: data deleted')
+  //   }
+
+  //   // run query
+  //   const sqlStr = `UPDATE INTO ${this._tableName} SET ?`
+  //   await this._connection.query(sqlStr, this._attributes)
+
+  // }
+
+  async delete(hint: { [key in PK]: T[key] }) {
+    // run query
+    const sqlStr = `DELETE FROM ${this._tableName} ${this.getHintStr(hint)}`
+    await this._connection.query(sqlStr)
+
+    return
+  }
+
+  private getHintStr(hint: { [key in PK]: T[key] }): string {
+    const cond = Object.entries(hint).map(([k, v]) => `${k} = ${v}`).join(' AND ')
+    return !!cond.length ? `WHERE ${cond}` : ''
+  }
+
+  async findAll(): Promise<RowDataPacket<T>[]> {
+    return this._connection.query(`SELECT * FROM ${this._tableName}`)
+  }
+
+  async findOne(hint: { [key in PK]: T[key] }) {
+    const hintStr = this.getHintStr(hint)
+    const sql = `SELECT * FROM ${this._tableName} ${hintStr}`
+    const result: RowDataPacket<T>[] = await this._connection.query(sql)
+    const data = result[0]
+
+    if (!data) {
+      throw new Error('Record not found!')
+    }
+
+    return data
+  }
+}

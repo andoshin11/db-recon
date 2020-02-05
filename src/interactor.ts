@@ -41,6 +41,26 @@ export class Interactor {
     }
   }
 
+  async getMetaInfo(tableName: string): Promise<Types.GetMetaInfoResult[]> {
+    const sql = this.resolver.getMetaInfoQuery(tableName, this.database)
+    const result: Types.GetMetaInfoResult[] = await this.sequelize.query(sql, {
+      type: QueryTypes.SELECT,
+      raw: true
+    })
+
+    return result
+  }
+
+  async getPrimaryKeys(tableName: string): Promise<string[]> {
+    const sql = this.resolver.getPrimaryKeysQuery(tableName, this.database)
+    const result: Types.GetPrimaryKeysResult[] = await this.sequelize.query(sql, {
+      type: QueryTypes.SELECT,
+      raw: true
+    })
+
+    return result.map(r => r.column_name)
+  }
+
   async describeTable(tableName: string, schema?: string): Promise<{ [column: string]: Types.DescribeTableResult }> {
     const result = await this.queryInterface.describeTable(tableName, { schema })
     return result as any

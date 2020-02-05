@@ -21,6 +21,29 @@ export const resolver: Resolver = {
         AND K.CONSTRAINT_SCHEMA = '${schemaName}';`
   },
 
+  getMetaInfoQuery(tableName: string): string {
+    return `
+      SELECT \
+        C.TABLE_NAME as source_table \
+      , C.COLUMN_NAME as source_column \
+      , C.extra as extra \
+      FROM INFORMATION_SCHEMA.COLUMNS AS C \
+      WHERE \
+        C.TABLE_NAME = '${tableName}';`
+  },
+
+  getPrimaryKeysQuery(tableName: string, schemaName: string) {
+    return `
+      SELECT k.column_name \
+        FROM information_schema.table_constraints t \
+        JOIN information_schema.key_column_usage k \
+        USING(constraint_name,table_schema,table_name) \
+        WHERE t.constraint_type='PRIMARY KEY' \
+          AND t.table_schema='${schemaName}'
+          AND t.table_name='${tableName}';
+    `
+  },
+
   isUnique(record) {
     return !!record && !!record.column_key && record.column_key.toUpperCase() === 'UNI'
   },
@@ -36,4 +59,12 @@ export const resolver: Resolver = {
   isSerialKey(record) {
     return !!record && !!record.extra && record.extra === 'auto_increment'
   },
+
+  isAutoIncrement(record) {
+    return !!record && !!record.extra && record.extra === 'auto_increment'
+  },
+
+  isDefaultGenerated(record) {
+    return !!record && !!record.extra && /DEFAULT_GENERATED/.test(record.extra)
+  }
 }

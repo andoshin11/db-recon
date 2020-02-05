@@ -1,8 +1,25 @@
-<%_ Object.entries(data).forEach(([tableName, tableInfo]) => { _%>
-export interface <%= tableName%>Attribute {
+<%_ Object.entries(typeInfo).forEach(([tableName, tableInfo]) => { _%>
+export type <%= tableName%>Attribute = {
   <%_ Object.entries(tableInfo).forEach(([columnName, typeInfo]) => {_%>
   <%= columnName %>: <%= typeInfo.type %><%= typeInfo.isNullable ? ' | null' : '' _%>;
   <% }) _%>
+}
+
+export type <%= tableName %>PK = <%_ PKInfo[tableName].forEach(pk => { _%>| "<%= pk %>"<%_ }) _%>
+
+
+export type <%= tableName %>Meta = {
+  <%_ Object.entries(metaInfo[tableName]).forEach(([columnName, meta]) => { _%>
+  <%= columnName %>: {
+    <%_ Object.entries(meta).forEach(([metaKey, metaValue]) => { _%>
+    <%= metaKey %>: {
+      <%_ Object.entries(metaValue).forEach(([k, v]) => { _%>
+      <%= k %>: <%= v %>
+      <%_ }) _%>
+    }
+    <%_ }) _%>
+  }
+  <%_}) _%>
 }
 
 <%_ }) _%>

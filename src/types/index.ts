@@ -23,6 +23,13 @@ export type ForeignKeyInfo = {
   } | null
 }
 
+export type MetaInfo = {
+  extra: {
+    defaultGenerad: boolean;
+    autoIncrement: boolean
+  }
+}
+
 export type ColumnInfo = {
   type: string
   allowNull: boolean

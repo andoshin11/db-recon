@@ -24,6 +24,14 @@ export const resolver: Resolver = {
     WHERE ccu.table_name = " + Utils.addTicks(tableName, "'");
   },
 
+  getMetaInfoQuery() {
+    throw new Error('not implemented!')
+  },
+
+  getPrimaryKeysQuery() {
+    throw new Error('not implemented!')
+  },
+
   isUnique(record) {
     return false
   },
@@ -39,4 +47,12 @@ export const resolver: Resolver = {
   isSerialKey(record) {
     return !!record && resolver.isPrimaryKey(record) && !!record.is_identity
   },
+
+  isAutoIncrement() {
+    throw new Error('not implemented!')
+  },
+
+  isDefaultGenerated() {
+    throw new Error('not implemented!')
+  }
 }

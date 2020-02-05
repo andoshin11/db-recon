@@ -1,6 +1,6 @@
 import { Resolver } from '../resolver'
 import { Interactor } from '../interactor'
-import { DBInfo, TableInfo, ForeignKeyInfo, ColumnInfo, GetForeignKeysResult } from '../types'
+import { DBInfo, TableInfo, ForeignKeyInfo, MetaInfo, ColumnInfo, GetForeignKeysResult, GetMetaInfoResult } from '../types'
 
 export async function processForeignKeyInfo(tableNames: string[], interactor: Interactor, resolver: Resolver): Promise<DBInfo<ForeignKeyInfo>> {
   const info: DBInfo<ForeignKeyInfo> = {}
@@ -18,6 +18,33 @@ export async function processForeignKeyInfo(tableNames: string[], interactor: In
   return info
 }
 
+export async function processMetaInfo(tableNames: string[], interactor: Interactor, resolver: Resolver) {
+  const info: DBInfo<MetaInfo> = {}
+
+  await Promise.all(tableNames.map(async (tableName) => {
+    const meta = await interactor.getMetaInfo(tableName)
+    const metaInfo = meta.reduce((acc, ac) => {
+      if (!ac.source_column) return acc
+      acc[ac.source_column] = formatMetaInfo(resolver)(ac)
+      return acc
+    }, {} as TableInfo<MetaInfo>)
+    info[tableName] = metaInfo
+  }))
+
+  return info
+}
+
+export async function processPrimaryKeyInfo(tableNames: string[], interactor: Interactor): Promise<Record<string, string[]>> {
+  const info: Record<string, string[]> = {}
+
+  await Promise.all(tableNames.map(async (tableName) => {
+    const primaryKeys = await interactor.getPrimaryKeys(tableName)
+    info[tableName] = primaryKeys
+  }))
+
+  return info
+}
+
 export async function processColumnInfo(tableNames: string[], interactor: Interactor): Promise<DBInfo<ColumnInfo>> {
   const info: DBInfo<ColumnInfo> = {}
 
@@ -25,6 +52,20 @@ export async function processColumnInfo(tableNames: string[], interactor: Intera
     const columnInfo = await interactor.describeTable(tableName)
     info[tableName] = columnInfo
   }))
+
+  return info
+}
+
+const formatMetaInfo = (resolver: Resolver) => (data: GetMetaInfoResult): MetaInfo => {
+  const info = createEmptyMetaInfo()
+
+  if (resolver.isAutoIncrement(data)) {
+    info.extra.autoIncrement = true
+  }
+
+  if (resolver.isDefaultGenerated(data)) {
+    info.extra.defaultGenerad = true
+  }
 
   return info
 }
@@ -67,5 +108,14 @@ function createEmptyForeignKeyInfo(): ForeignKeyInfo {
     isSerialKey: false,
     isForeignKey: false,
     foreignSources: null
+  }
+}
+
+function createEmptyMetaInfo(): MetaInfo {
+  return {
+    extra: {
+      autoIncrement: false,
+      defaultGenerad: false
+    }
   }
 }

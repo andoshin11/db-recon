@@ -10,6 +10,16 @@ export type GetForeignKeysResult = {
   column_key: '' | 'PRI' | 'UNI' | 'MUL'
 }
 
+export type GetPrimaryKeysResult = {
+  column_name: string
+}
+
+export type GetMetaInfoResult = {
+  source_table: string | null
+  source_column: string | null
+  extra: string | null
+}
+
 export type DescribeTableResult = {
   type: string
   allowNull: boolean
