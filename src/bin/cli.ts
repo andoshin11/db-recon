@@ -65,7 +65,7 @@ commander
           options: {
             useUTC: false,
             dateFirst: 1,
-            requestTimeout: 50000
+            requestTimeout: 100000
           }
         }
       })
