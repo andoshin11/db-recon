@@ -66,5 +66,10 @@ export const resolver: Resolver = {
 
   isDefaultGenerated(record) {
     return !!record && !!record.extra && /DEFAULT_GENERATED/.test(record.extra)
+  },
+
+  isIdentity() {
+    // TODO
+    return false
   }
 }

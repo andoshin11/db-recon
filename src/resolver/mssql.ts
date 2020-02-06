@@ -24,12 +24,33 @@ export const resolver: Resolver = {
     WHERE ccu.table_name = " + Utils.addTicks(tableName, "'");
   },
 
-  getMetaInfoQuery() {
-    throw new Error('not implemented!')
+  getMetaInfoQuery(tableName: string, schemaName: string) {
+    const query = "SELECT \
+      c.TABLE_NAME AS source_table, \
+      c.COLUMN_NAME AS source_column, \
+      c.COLUMN_DEFAULT AS extra, \
+      s.is_identity AS is_identity \
+    FROM INFORMATION_SCHEMA.COLUMNS c \
+    INNER JOIN sys.columns s \
+      ON s.name = c.column_name \
+      AND s.object_id = OBJECT_ID(c.table_name) \
+    WHERE c.TABLE_CATALOG = '" + schemaName + "' AND c.TABLE_NAME = '" + tableName + "';"
+
+    return query
   },
 
-  getPrimaryKeysQuery() {
-    throw new Error('not implemented!')
+  getPrimaryKeysQuery(tableName: string) {
+    return "SELECT \
+      c.name AS column_name \
+    FROM sys.indexes i \
+    INNER JOIN sys.index_columns ic \
+      on i.object_id = ic.object_id \
+    INNER JOIN sys.columns c \
+      on c.column_id = ic.column_id \
+      AND c.object_id = ic.object_id \
+    INNER JOIN sys.objects o \
+      on i.object_id = o.object_id \
+    WHERE o.type = 'U' AND o.name = '" + tableName + "' ;"
   },
 
   isUnique(record) {
@@ -48,11 +69,15 @@ export const resolver: Resolver = {
     return !!record && resolver.isPrimaryKey(record) && !!record.is_identity
   },
 
-  isAutoIncrement() {
-    throw new Error('not implemented!')
+  isAutoIncrement(record) {
+    return !!record && !!record.extra && /newid/.test(record.extra)
   },
 
-  isDefaultGenerated() {
-    throw new Error('not implemented!')
+  isDefaultGenerated(record) {
+    return !!record && !!record.extra && /sysdatetime/.test(record.extra)
+  },
+
+  isIdentity(record) {
+    return !!record && !!record.is_identity
   }
 }

@@ -16,4 +16,5 @@ export type Resolver = {
   isSerialKey: <T extends RecordType>(record?: T) => boolean
   isAutoIncrement: <T extends RecordType>(record?: T) => boolean
   isDefaultGenerated: <T extends RecordType>(record?: T) => boolean
+  isIdentity: <T extends RecordType>(record?: T) => boolean
 }
