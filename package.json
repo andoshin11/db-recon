@@ -1,6 +1,6 @@
 {
   "name": "db-recon",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "index.js",
   "author": "andoshin11 <shinglish11@gmail.com>",
   "license": "MIT",
