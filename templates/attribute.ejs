@@ -5,7 +5,11 @@ export type <%= tableName%>Attribute = {
   <% }) _%>
 }
 
-export type <%= tableName %>PK = <%_ PKInfo[tableName].forEach(pk => { _%>| "<%= pk %>"<%_ }) _%>
+export type <%= tableName %>PK = <%_ if (PKInfo[tableName].length) { _%>
+  <%_ PKInfo[tableName].forEach(pk => { _%>| "<%= pk %>"<%_ }) _%>
+<%_ } else { _%>
+  <%_ Object.keys(tableInfo).forEach(pk => { _%>| "<%= pk %>"<%_ }) _%>
+<%_ } _%>
 
 
 export type <%= tableName %>Meta = {
