@@ -1,5 +1,5 @@
 # DB-Recon
-Automatically generate typescript interfaces from database schema.
+Automatically generate typescript interfaces and db client from database schema.
 
 ## :warning: Restriction :warning:
 DB-Recon currently supports only MySQL.
