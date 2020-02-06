@@ -64,7 +64,11 @@ const formatMetaInfo = (resolver: Resolver) => (data: GetMetaInfoResult): MetaIn
   }
 
   if (resolver.isDefaultGenerated(data)) {
-    info.extra.defaultGenerad = true
+    info.extra.defaultGenerated = true
+  }
+
+  if (resolver.isIdentity(data)) {
+    info.extra.identity = true
   }
 
   return info
@@ -115,7 +119,8 @@ function createEmptyMetaInfo(): MetaInfo {
   return {
     extra: {
       autoIncrement: false,
-      defaultGenerad: false
+      defaultGenerated: false,
+      identity: false
     }
   }
 }

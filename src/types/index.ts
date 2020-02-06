@@ -25,8 +25,9 @@ export type ForeignKeyInfo = {
 
 export type MetaInfo = {
   extra: {
-    defaultGenerad: boolean;
-    autoIncrement: boolean
+    defaultGenerated: boolean;
+    autoIncrement: boolean;
+    identity: boolean;
   }
 }
 

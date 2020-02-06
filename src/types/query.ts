@@ -18,6 +18,7 @@ export type GetMetaInfoResult = {
   source_table: string | null
   source_column: string | null
   extra: string | null
+  is_identity?: boolean
 }
 
 export type DescribeTableResult = {
